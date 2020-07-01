@@ -12,8 +12,8 @@ interface Balance {
 class TransactionsRepository extends Repository<Transaction> {
   public async getBalance(): Promise<Balance> {
     const income = (await this.find({ where: { type: 'income' } })).reduce(
-      (total, transaction) => {
-        const partial = total + transaction.value;
+      (total: number, transaction: Transaction): number => {
+        const partial = (total + transaction.value) as number;
         return partial;
       },
       0,
@@ -27,7 +27,6 @@ class TransactionsRepository extends Repository<Transaction> {
     );
     return { income, outcome, total: income - outcome };
   }
-}
 }
 
 export default TransactionsRepository;

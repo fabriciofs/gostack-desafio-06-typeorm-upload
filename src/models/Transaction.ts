@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  AfterLoad,
 } from 'typeorm';
 import Category from './Category';
 
@@ -20,14 +21,19 @@ class Transaction {
   @Column()
   type: 'income' | 'outcome';
 
-  @Column()
+  @AfterLoad()
+  _convertNumerics() {
+    this.value = parseFloat(this.value as any);
+  }
+
+  @Column({ type: 'float' })
   value: number;
 
   @Column({ name: 'category_id' })
   category_id: string;
 
   @ManyToOne(() => Category)
-  @JoinColumn({ name: 'provider_id' })
+  @JoinColumn({ name: 'category_id' })
   category: Category;
 
   @CreateDateColumn({ name: 'created_at' })
